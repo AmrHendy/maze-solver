@@ -4,10 +4,10 @@ class Policy:
         """
         :param state_actions_map: is dictionary where key is the state and the value is list of best possible actions
         """
-        self.state_action_map = state_actions_map
+        self.__state_action_map = state_actions_map
 
     def __get_actions(self, state):
-        return self.state_action_map[state]
+        return self.__state_action_map[state]
 
     def __set_actions(self, state, actions):
-        self.state_action_map[state] = actions
+        self.__state_action_map[state] = actions
