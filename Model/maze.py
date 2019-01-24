@@ -1,5 +1,6 @@
 from random import shuffle
 from Model.state import State
+from Model.states_map import StateMap
 import numpy as np
 
 
@@ -9,10 +10,11 @@ class Maze:
         self.__maze_rows = maze_rows
         self.__maze_cols = maze_cols
         self.__maze = self.generate_random_grid()
-        self.__states = {}
+        self.__states = StateMap.get_instance()
         for i in range(0, maze_rows):
             for j in range(0, maze_cols):
-                self.__states[(i, j)] = State(i, j, self.__maze, 0)
+                s = State(i, j, self.__maze, 0)
+                self.__states.add_state(i, j, s)
 
         self.__agent_index = (0, 0)
 
