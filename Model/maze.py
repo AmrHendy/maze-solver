@@ -46,6 +46,9 @@ class Maze:
     def get_maze_grid(self):
         return self.__maze
 
+    def get_grid_value(self, row, col):
+        return self.__maze[row][col]
+
     def move_agent(self, row, col):
         self.__agent_index = (row, col)
 
