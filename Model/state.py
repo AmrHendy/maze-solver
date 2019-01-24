@@ -26,5 +26,9 @@ class State:
     def get_value(self):
         return self.__value
 
+    @property
+    def get_reward(self):
+        return self.__reward
+
     def set_value(self, value):
         self.__value = value
