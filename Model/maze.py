@@ -25,7 +25,7 @@ class Maze:
             cells with value = one means barrier cells
             cells with value = zero means empty cells
         """
-        barrier_count = self.__maze_rows * self.__maze_cols * 0.2
+        barrier_count = int(self.__maze_rows * self.__maze_cols * 0.2)
         grid = [1] * barrier_count + [0] * (self.__maze_rows * self.__maze_cols - barrier_count)
         shuffle(grid)
         # mark the start and the end

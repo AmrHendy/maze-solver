@@ -16,7 +16,8 @@ class State:
                 next_index = self.__index
             self.__next_states[action_type] = next_index
         if row == grid.shape[0] - 1 and col == grid.shape[1] - 1:
-            self.__reward = 100
+            self.__reward = 20
+        self.__single_index = row * grid.shape[1] + col
 
     def get_next_state(self, action_type):
         assert action_type in self.__next_states.keys()
@@ -30,5 +31,15 @@ class State:
     def get_reward(self):
         return self.__reward
 
+    @property
+    def get_index(self):
+        return self.__index
+
+    @property
+    def get_single_index(self):
+        return self.__single_index
+
     def set_value(self, value):
         self.__value = value
+
+

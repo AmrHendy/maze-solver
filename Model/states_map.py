@@ -25,5 +25,6 @@ class StateMap:
         return self.__states
 
     @property
-    def get_no_states(self):
-        return len(self.__states)
+    def get_num_states(self):
+        num_states = len(self.__states)
+        return num_states
