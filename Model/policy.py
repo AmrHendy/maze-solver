@@ -11,3 +11,6 @@ class Policy:
 
     def __set_actions(self, state, actions):
         self.__state_action_map[state] = actions
+
+    def __str__(self):
+        print(self.__state_action_map)

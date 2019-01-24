@@ -1,10 +1,9 @@
 from Model.maze import Maze
 from Control.algorithm_factory import AlgorithmFactory
-from Control.algorithms.algorithm import AlgorithmType, Algorithm
+from Control.algorithms.algorithm import AlgorithmType
 
-print("Hello, World")
 
-rows = cols = 5
+rows = cols = 10
 
 maze = Maze(rows, cols)
 

@@ -16,7 +16,7 @@ class ValueIteration(Algorithm):
         states = self._states.get_states
         values = np.zeros((num_states,))
         policy_map = {}
-        iterations = 20
+        iterations = 30
 
         # iterate for N times.
         for k in range(iterations):
