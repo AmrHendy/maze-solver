@@ -46,3 +46,6 @@ class Maze:
 
     def move_agent(self, row, col):
         self.__agent_index = (row, col)
+
+    def get_agent_index(self):
+        return self.__agent_index
