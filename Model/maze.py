@@ -88,4 +88,3 @@ class Maze:
         if row < 0 or row >= self.__maze_rows or col < 0 or col >= self.__maze_cols:
             return False
         return True
-    
