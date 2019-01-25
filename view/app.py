@@ -5,6 +5,7 @@ from control.algorithms.algorithm import AlgorithmType
 
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
+STEP_COLOR = (0, 150, 0)
 MARGIN = 1
 WIDTH = 30
 HEIGHT = 30
@@ -17,6 +18,7 @@ class App:
         self.__N, self.__M = rows, cols
         self.__agent = Agent(rows, cols)
         self.__agent.solve_maze(AlgorithmType.ValueIteration)
+        self.__path = set()
         self.__window_shape = [self.__N * (WIDTH + MARGIN), self.__M * (HEIGHT + MARGIN)]
         self.__running = True
         self.__display_surf = None
@@ -56,6 +58,7 @@ class App:
 
             # not finished yet, so wait for step time then advance the agent
             self.__clock.tick(2)
+            self.__path.add(self.__agent.get_agent_index())
             self.__agent.advance_agent()
         # finish the game so quite
         pygame.quit()
@@ -81,7 +84,9 @@ class App:
                     self.__display_surf.blit(self.__target_image, self.__target_rect)
                 # draw empty cells and blocked cells
                 else:
-                    if self.__agent.get_maze().get_grid_value(row, column) == 1:
+                    if (row, column) in self.__path:
+                        color = STEP_COLOR
+                    elif self.__agent.get_maze().get_grid_value(row, column) == 1:
                         color = BLACK
                     else:
                         color = WHITE
