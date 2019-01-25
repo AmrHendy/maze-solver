@@ -1,5 +1,5 @@
-from Control.algorithms.algorithm import Algorithm
-from Model.policy import Policy
+from control.algorithms.algorithm import Algorithm
+from model.policy import Policy
 import numpy as np
 
 
@@ -39,6 +39,7 @@ class ValueIteration(Algorithm):
                 policy_map[ind] = [max_action]
 
             values = new_values
+            self._state_values = values
             if max_delta < convergence_error:
                 break
 

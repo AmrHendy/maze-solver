@@ -1,6 +1,6 @@
-from Model.maze import Maze
-from Control.algorithm_factory import AlgorithmFactory
-from Control.algorithms.algorithm import AlgorithmType
+from model.maze import Maze
+from control.algorithm_factory import AlgorithmFactory
+from control.algorithms.algorithm import AlgorithmType
 
 
 class Agent:
@@ -10,13 +10,21 @@ class Agent:
         self.__maze_cols = maze_cols
         self.__maze = Maze(maze_rows, maze_cols)
         self.__agent_policy = None
+        self.__state_values = self.get_mdp_solver(AlgorithmType.PolicyIteration).get_state_values()
+        self.__policy_map = self.get_mdp_solver(AlgorithmType.PolicyIteration).get_current_policy().get_actions_map()
 
     def solve_maze(self, algorithm_type):
+        mdp_algorithm = self.get_mdp_solver(algorithm_type)
+        mdp_algorithm.run_algorithm()
+        self.__agent_policy = mdp_algorithm.get_current_policy()
+        self.__state_values = mdp_algorithm.get_state_values()
+        self.__policy_map = self.__agent_policy.get_actions_map()
+
+    def get_mdp_solver(self, algorithm_type):
         assert algorithm_type == AlgorithmType.PolicyIteration or algorithm_type == AlgorithmType.ValueIteration
         factory = AlgorithmFactory.get_instance()
         mdp_algorithm = factory.produce_algorithm(algorithm_type)
-        mdp_algorithm.run_algorithm()
-        self.__agent_policy = mdp_algorithm.get_current_policy()
+        return mdp_algorithm
 
     def advance_agent(self):
         if not self.is_goal():
@@ -42,3 +50,9 @@ class Agent:
 
     def get_maze(self):
         return self.__maze
+
+    def get_state_values(self):
+        return self.__state_values
+
+    def get_policy_map(self):
+        return self.__policy_map

@@ -1,6 +1,6 @@
-from Model.maze import Maze
-from Control.algorithm_factory import AlgorithmFactory
-from Control.algorithms.algorithm import AlgorithmType
+from model.maze import Maze
+from control.algorithm_factory import AlgorithmFactory
+from control.algorithms.algorithm import AlgorithmType
 
 
 rows = cols = 10
