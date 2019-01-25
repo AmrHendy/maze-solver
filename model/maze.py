@@ -1,5 +1,5 @@
 from random import shuffle
-from model.state import State
+from model.state import State, CellType
 from model.states_map import StateMap
 import numpy as np
 
@@ -13,7 +13,13 @@ class Maze:
         self.__states = StateMap.get_instance()
         for i in range(0, maze_rows):
             for j in range(0, maze_cols):
-                s = State(i, j, self.__maze, 0)
+                if self.__maze[i, j] == 1:
+                    cell_type = CellType.block
+                else:
+                    cell_type = CellType.empty
+                if (i, j) == (maze_rows - 1, maze_cols - 1):
+                    cell_type = CellType.end
+                s = State(i, j, self.__maze, cell_type)
                 self.__states.add_state(i, j, s)
 
     def generate_random_grid(self):
@@ -26,7 +32,7 @@ class Maze:
         valid_grid = False
         while not valid_grid:
             print('Generating Random Grid')
-            blocks_ratio = 0.2
+            blocks_ratio = 0.4
             barrier_count = int(self.__maze_rows * self.__maze_cols * blocks_ratio)
             grid = [1] * barrier_count + [0] * (self.__maze_rows * self.__maze_cols - barrier_count)
             shuffle(grid)

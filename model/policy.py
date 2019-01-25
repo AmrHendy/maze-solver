@@ -21,4 +21,4 @@ class Policy:
         return current_state.get_next_state(action_type)
 
     def __str__(self):
-        print(self.__state_action_map)
+        return str(self.__state_action_map)

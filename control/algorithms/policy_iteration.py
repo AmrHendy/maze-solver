@@ -54,7 +54,7 @@ class PolicyIteration(Algorithm):
                 for action in all_actions:
                     next_state_ind = state.get_next_state(action)
                     next_state = self._states.get_states[next_state_ind]
-                    state_value += state.get_reward + gamma * state_values[next_state.get_single_index]
+                    state_value += state.get_reward(action) + gamma * state_values[next_state.get_single_index]
                 state_value *= (1.0 / len(all_actions))
 
                 # update the value of the state
@@ -82,8 +82,9 @@ class PolicyIteration(Algorithm):
             for action in actions:
                 next_state_ind = state.get_next_state(action)
                 next_state = self._states.get_states[next_state_ind]
-                q = next_state.get_reward + gamma * policy_state_values[next_state.get_single_index]
+                q = next_state.get_reward(action) + gamma * policy_state_values[next_state.get_single_index]
                 if q > max_q:
+                    max_q = q
                     max_action = action
 
             new_policy_map[ind] = [max_action]

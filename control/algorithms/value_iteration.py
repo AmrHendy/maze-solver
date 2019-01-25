@@ -52,7 +52,7 @@ class ValueIteration(Algorithm):
         for act in actions:
             next_state_ind = curr_state.get_next_state(act)
             next_state = states[next_state_ind]
-            q = next_state.get_reward + gamma * values[next_state.get_single_index]
+            q = next_state.get_reward(act) + gamma * values[next_state.get_single_index]
             if q > max_q:
                 max_q = q
                 max_action = act
