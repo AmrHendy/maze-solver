@@ -1,9 +1,6 @@
 from random import shuffle
-
-from numpy.core.multiarray import dtype
-
-from Model.state import State
-from Model.states_map import StateMap
+from model.state import State
+from model.states_map import StateMap
 import numpy as np
 
 
@@ -19,8 +16,6 @@ class Maze:
                 s = State(i, j, self.__maze, 0)
                 self.__states.add_state(i, j, s)
 
-        self.__agent_index = (0, 0)
-
     def generate_random_grid(self):
         """
             start cell is (1,1)
@@ -30,7 +25,7 @@ class Maze:
         """
         valid_grid = False
         while not valid_grid:
-            print 'Generating Random Grid'
+            print('Generating Random Grid')
             blocks_ratio = 0.2
             barrier_count = int(self.__maze_rows * self.__maze_cols * blocks_ratio)
             grid = [1] * barrier_count + [0] * (self.__maze_rows * self.__maze_cols - barrier_count)
@@ -56,12 +51,6 @@ class Maze:
 
     def get_grid_value(self, row, col):
         return self.__maze[row][col]
-
-    def move_agent(self, row, col):
-        self.__agent_index = (row, col)
-
-    def get_agent_index(self):
-        return self.__agent_index
 
     def __is_valid(self, grid):
         vis = np.zeros(shape=grid.shape, dtype='int')
