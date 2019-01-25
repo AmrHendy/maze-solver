@@ -7,8 +7,8 @@ WHITE = (255, 255, 255)
 STEP_COLOR = (0, 150, 0)
 SPLIT_COLOR = (255, 0, 0)
 MARGIN = 1
-WIDTH = 40
-HEIGHT = 40
+WIDTH = 25
+HEIGHT = 25
 SPLITS = 2
 GRIDS = 3
 HOVER_START = (0,255,0)
@@ -33,15 +33,22 @@ class App:
         self.__clock = None
         self.__agent_rect = None
         self.__ticks = 60
+        self.__fake_screen = None
+        self.__pic = None
 
     def on_init(self):
         pygame.init()
-        self.__display_surf = pygame.display.set_mode(self.__window_shape)
+        self.__display_surf = pygame.display.set_mode(self.__window_shape,
+                                                      pygame.HWSURFACE |
+                                                      pygame.DOUBLEBUF)
         pygame.display.set_caption('RL Maze Solver')
         self.__running = True
         self.__agent_image, self.__agent_rect = self.image_to_rect("view/images/agent.png")
         self.__target_image, self.__target_rect = self.image_to_rect("view/images/target.jpg")
         self.__clock = pygame.time.Clock()
+        self.__fake_screen = self.__display_surf.copy()
+        self.__pic = pygame.Surface((50, 50))
+        self.__pic.fill((255, 100, 200))
 
     def image_to_rect(self, image_path):
         image = pygame.image.load(image_path)
@@ -71,6 +78,11 @@ class App:
     def on_event(self, event):
         if event.type == pygame.QUIT:
             self.__running = False
+        elif event.type == pygame.RESIZABLE:
+            self.__display_surf = pygame.display.set_mode(event.dict['size'], pygame.HWSURFACE |
+                                                          pygame.DOUBLEBUF)
+            self.__display_surf.blit(pygame.transform.scale(self.__fake_screen, event.dict['size']), (0, 0))
+            pygame.display.flip()
 
     def draw_split_rect_vertical(self, offset):
         pygame.draw.rect(self.__display_surf, SPLIT_COLOR,
@@ -106,12 +118,12 @@ class App:
                 self.__agent.restart_same_maze()
                 self.__agent.solve_maze(AlgorithmType.PolicyIteration)
                 self.__path = set()
-                self.__ticks = 2
+                self.__ticks = 3
         else:
             pygame.draw.rect(self.__display_surf, START_COLOR, (x, y, w, h))
 
         center = ((x + (w / 2)), (y + (h / 2)))
-        self.draw_text("Solve Using Policy Iteration", center, 20)
+        self.draw_text("Solve Using Policy Iteration", center, 15)
 
         # draw Reset button
         x += w + self.__window_shape[0] / 11
@@ -125,7 +137,7 @@ class App:
             pygame.draw.rect(self.__display_surf, START_COLOR, (x, y, w, h))
 
         center = ((x + (w / 2)), (y + (h / 2)))
-        self.draw_text("Reset Maze", center, 20)
+        self.draw_text("Reset Maze", center, 15)
 
         # draw Solve Using Value Iteration button
         x += w + self.__window_shape[0] / 11
@@ -135,12 +147,12 @@ class App:
                 self.__agent.restart_same_maze()
                 self.__agent.solve_maze(AlgorithmType.ValueIteration)
                 self.__path = set()
-                self.__ticks = 2
+                self.__ticks = 3
         else:
             pygame.draw.rect(self.__display_surf, START_COLOR, (x, y, w, h))
 
         center = ((x + (w / 2)), (y + (h / 2)))
-        self.draw_text("Solve Using Value Iteration", center, 20)
+        self.draw_text("Solve Using Value Iteration", center, 15)
 
     def draw_text(self, txt, center, sz):
         font = pygame.font.Font(pygame.font.get_default_font(), sz)
