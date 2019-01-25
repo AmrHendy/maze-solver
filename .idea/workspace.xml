@@ -189,7 +189,7 @@
     <option name="x" value="65" />
     <option name="y" value="-5" />
     <option name="width" value="1855" />
-    <option name="height" value="1078" />
+    <option name="height" value="1079" />
   </component>
   <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="1" id="Add" />
@@ -274,6 +274,9 @@
       <module name="maze-solver" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
       <option name="SDK_HOME" value="C:\Users\Muhammed\Anaconda3\python.exe" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <option name="IS_MODULE_SDK" value="false" />
