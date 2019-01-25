@@ -1,4 +1,4 @@
-from Control.algorithms.algorithm import Algorithm
+from control.algorithms.algorithm import Algorithm
 
 
 class PolicyIteration(Algorithm):
