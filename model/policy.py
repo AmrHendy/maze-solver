@@ -1,3 +1,6 @@
+from model.states_map import StateMap
+
+
 class Policy:
 
     def __init__(self, state_actions_map):
@@ -11,6 +14,11 @@ class Policy:
 
     def __set_actions(self, state, actions):
         self.__state_action_map[state] = actions
+
+    def apply_policy(self, row, col):
+        current_state = StateMap.get_instance().get_state(row, col)
+        action_type = self.__state_action_map[(row, col)][0]
+        return current_state.get_next_state(action_type)
 
     def __str__(self):
         print(self.__state_action_map)
