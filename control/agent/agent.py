@@ -39,3 +39,6 @@ class Agent:
 
     def is_goal(self):
         return self.__agent_index == (self.__maze_rows - 1, self.__maze_cols - 1)
+
+    def get_maze(self):
+        return self.__maze
