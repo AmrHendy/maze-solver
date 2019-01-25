@@ -32,6 +32,7 @@ class App:
         self.__target_rect = None
         self.__clock = None
         self.__agent_rect = None
+        self.__ticks = 60
 
     def on_init(self):
         pygame.init()
@@ -56,11 +57,15 @@ class App:
             # rendering
             self.render()
 
+            if self.__agent.is_goal():
+                self.__ticks = 60
+
             # not finished yet, so wait for step time then advance the agent
-            self.__clock.tick(2)
+            self.__clock.tick(self.__ticks)
             self.__path.add(self.__agent.get_agent_index())
             self.__agent.advance_agent()
         # finish the game so quite
+        pygame.display.quit()
         pygame.quit()
 
     def on_event(self, event):
@@ -101,6 +106,7 @@ class App:
                 self.__agent.restart_same_maze()
                 self.__agent.solve_maze(AlgorithmType.PolicyIteration)
                 self.__path = set()
+                self.__ticks = 2
         else:
             pygame.draw.rect(self.__display_surf, START_COLOR, (x, y, w, h))
 
@@ -114,6 +120,7 @@ class App:
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 self.__agent.restart_same_maze()
                 self.__path = set()
+                self.__ticks = 60
         else:
             pygame.draw.rect(self.__display_surf, START_COLOR, (x, y, w, h))
 
@@ -128,6 +135,7 @@ class App:
                 self.__agent.restart_same_maze()
                 self.__agent.solve_maze(AlgorithmType.ValueIteration)
                 self.__path = set()
+                self.__ticks = 2
         else:
             pygame.draw.rect(self.__display_surf, START_COLOR, (x, y, w, h))
 
