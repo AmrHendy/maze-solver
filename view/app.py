@@ -2,7 +2,6 @@ import pygame
 from control.agent.agent import Agent
 from control.algorithms.algorithm import AlgorithmType
 
-
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 STEP_COLOR = (0, 150, 0)
@@ -22,7 +21,6 @@ class App:
         # should be taken from text input
         self.__N, self.__M = rows, cols
         self.__agent = Agent(rows, cols)
-        self.__agent.solve_maze(AlgorithmType.ValueIteration)
         self.__path = set()
         self.__window_shape = [self.__N * (WIDTH + MARGIN) * GRIDS + WIDTH * SPLITS,
                                (self.__M + 2) * (HEIGHT + MARGIN)]
@@ -58,10 +56,6 @@ class App:
             # rendering
             self.render()
 
-            # check the goal so we finished
-            if self.__agent.is_goal():
-                self.__running = False
-
             # not finished yet, so wait for step time then advance the agent
             self.__clock.tick(2)
             self.__path.add(self.__agent.get_agent_index())
@@ -93,23 +87,52 @@ class App:
         self.draw_text("Policy", policy_text_center, 20)
         self.draw_text("Values", values_text_center, 20)
 
-    def draw_start_button(self):
+    def draw_buttons(self):
+        # draw Solve Using Policy Iteration button
         x = 0
         y = (MARGIN + HEIGHT) * (self.__M + 1)
-        w = self.__window_shape[0]
+        w = self.__window_shape[0] * (3 / 11)
         h = HEIGHT
         mouse = pygame.mouse.get_pos()
         event = pygame.event.poll()
         if x + w > mouse[0] > x and y + h > mouse[1] > y:
             pygame.draw.rect(self.__display_surf, HOVER_START, (x, y, w, h))
-
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                self.__running = False
+                self.__agent.restart_same_maze()
+                self.__agent.solve_maze(AlgorithmType.PolicyIteration)
+                self.__path = set()
         else:
             pygame.draw.rect(self.__display_surf, START_COLOR, (x, y, w, h))
 
         center = ((x + (w / 2)), (y + (h / 2)))
-        self.draw_text("START", center, 20)
+        self.draw_text("Solve Using Policy Iteration", center, 20)
+
+        # draw Reset button
+        x += w + self.__window_shape[0] / 11
+        if x + w > mouse[0] > x and y + h > mouse[1] > y:
+            pygame.draw.rect(self.__display_surf, HOVER_START, (x, y, w, h))
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                self.__agent.restart_same_maze()
+                self.__path = set()
+        else:
+            pygame.draw.rect(self.__display_surf, START_COLOR, (x, y, w, h))
+
+        center = ((x + (w / 2)), (y + (h / 2)))
+        self.draw_text("Reset Maze", center, 20)
+
+        # draw Solve Using Value Iteration button
+        x += w + self.__window_shape[0] / 11
+        if x + w > mouse[0] > x and y + h > mouse[1] > y:
+            pygame.draw.rect(self.__display_surf, HOVER_START, (x, y, w, h))
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                self.__agent.restart_same_maze()
+                self.__agent.solve_maze(AlgorithmType.ValueIteration)
+                self.__path = set()
+        else:
+            pygame.draw.rect(self.__display_surf, START_COLOR, (x, y, w, h))
+
+        center = ((x + (w / 2)), (y + (h / 2)))
+        self.draw_text("Solve Using Value Iteration", center, 20)
 
     def draw_text(self, txt, center, sz):
         font = pygame.font.Font(pygame.font.get_default_font(), sz)
@@ -168,7 +191,6 @@ class App:
                                         [topleft_x, topleft_y, WIDTH, HEIGHT])
                         continue
                     actions = values[(row, column)]
-                    cell_image, cell_rect = None, None
                     if len(actions) == 1:
                         image_path = "view/images/" + actions[0] + ".png"
                     elif len(actions) == 4:
@@ -181,14 +203,11 @@ class App:
                 else:
                     raise Exception("There is no grid with that type")
 
-
     def render(self):
         self.__display_surf.fill(BLACK)
 
         # Draw the grids
         self.draw_simulation_grid()
-        # TODO: you only need to pass the values you want, stringify it first
-        print(self.__agent.get_state_values())
         self.draw_text_grid(1, self.__agent.get_state_values(), 'values_grid')
         self.draw_text_grid(2, self.__agent.get_policy_map(), 'policy_grid')
 
@@ -199,8 +218,8 @@ class App:
         # Draw horizontal split
         self.draw_split_rect_horizontal()
 
-        # Draw the start button
-        self.draw_start_button()
+        # Draw the start button and menu
+        self.draw_buttons()
 
         # Update the view
         pygame.display.flip()
