@@ -1,4 +1,4 @@
-from Model.states_map import StateMap
+from model.states_map import StateMap
 from enum import Enum
 
 
@@ -45,7 +45,7 @@ class State:
         if self.__cell_type == CellType.empty:
             return -1
         elif self.__cell_type == CellType.block:
-            return -1000
+            return -1
         elif self.__cell_type == CellType.end:
             return 0
 

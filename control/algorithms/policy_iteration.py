@@ -1,29 +1,18 @@
-from Control.algorithms.algorithm import Algorithm
-from Model.policy import Policy
+from control.algorithms.algorithm import Algorithm
+from model.policy import Policy
 import numpy as np
 
 
 class PolicyIteration(Algorithm):
 
-    def __init__(self, states):
-        super(PolicyIteration, self).__init__(states)
-        self.__initial_policy_map = {}
-        for ind, state in self._states.get_states.items():
-            self.__initial_policy_map[ind] = []
-            actions = ['left', 'right', 'up', 'down']
-            for action in actions:
-                self.__initial_policy_map[ind].append(action)
-
     def run_algorithm(self):
-        num_states = self._states.get_num_states
-        state_values = np.zeros((num_states,))
-        policy_map = self.__initial_policy_map
+        policy_map = self._current_policy.get_actions_map()
         iterations = 100
 
         for k in range(iterations):
             # policy evaluation
-            policy_state_values = self.evaluate_policy(state_values, policy_map)
-            state_values = policy_state_values
+            policy_state_values = self.evaluate_policy(self._state_values, policy_map)
+            self._state_values = policy_state_values
             # greedy policy improvement
             new_policy_map, changed = self.improve_policy(policy_state_values, policy_map)
             policy_map = new_policy_map

@@ -1,6 +1,6 @@
 import pygame
-from Control.agent.agent import Agent
-from Control.algorithms.algorithm import AlgorithmType
+from control.agent.agent import Agent
+from control.algorithms.algorithm import AlgorithmType
 
 
 BLACK = (0, 0, 0)
@@ -145,23 +145,52 @@ class App:
                                       (MARGIN + HEIGHT) * row + MARGIN,
                                       WIDTH, HEIGHT])
 
-    def draw_text_grid(self, offset, values):
+    # grid_type can be values or policy
+    def draw_text_grid(self, offset, values, grid_type):
         for row in range(self.__N):
             for column in range(self.__M):
                 topleft_x = (MARGIN + WIDTH) * (column + offset * self.__N) + MARGIN + offset * WIDTH
                 topleft_y = (MARGIN + HEIGHT) * row + MARGIN
-                rect = pygame.draw.rect(self.__display_surf, WHITE, [topleft_x, topleft_y, WIDTH, HEIGHT])
-                self.draw_text("AAAAA", rect.center, 10)
+
+                if grid_type == 'values_grid':
+                    if self.__agent.get_maze().get_grid_value(row, column) == 1:
+                        color = BLACK
+                        pygame.draw.rect(self.__display_surf, color,
+                                        [topleft_x, topleft_y, WIDTH, HEIGHT])
+                    else:
+                        rect = pygame.draw.rect(self.__display_surf, WHITE, [topleft_x, topleft_y, WIDTH, HEIGHT])
+                        self.draw_text(str("{0:.2f}".format(values[row * self.__M + column])), rect.center, 10)
+
+                elif grid_type == 'policy_grid':
+                    if self.__agent.get_maze().get_grid_value(row, column) == 1:
+                        color = BLACK
+                        pygame.draw.rect(self.__display_surf, color,
+                                        [topleft_x, topleft_y, WIDTH, HEIGHT])
+                        continue
+                    actions = values[(row, column)]
+                    cell_image, cell_rect = None, None
+                    if len(actions) == 1:
+                        image_path = "view/images/" + actions[0] + ".png"
+                    elif len(actions) == 4:
+                        image_path = "view/images/all_arrows.png"
+                    else:
+                        continue
+                    cell_image, cell_rect = self.image_to_rect(image_path)
+                    cell_rect.topleft = topleft_x, topleft_y
+                    self.__display_surf.blit(cell_image, cell_rect)
+                else:
+                    raise Exception("There is no grid with that type")
+
 
     def render(self):
-
         self.__display_surf.fill(BLACK)
 
         # Draw the grids
         self.draw_simulation_grid()
         # TODO: you only need to pass the values you want, stringify it first
-        self.draw_text_grid(1, [])
-        self.draw_text_grid(2, [])
+        print(self.__agent.get_state_values())
+        self.draw_text_grid(1, self.__agent.get_state_values(), 'values_grid')
+        self.draw_text_grid(2, self.__agent.get_policy_map(), 'policy_grid')
 
         # Draw the vertical splits
         self.draw_split_rect_vertical(1)

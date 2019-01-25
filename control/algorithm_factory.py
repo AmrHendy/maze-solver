@@ -1,7 +1,7 @@
-from Control.algorithms.algorithm import AlgorithmType
-from Control.algorithms.policy_iteration import PolicyIteration
-from Control.algorithms.value_iteration import ValueIteration
-from Model.states_map import StateMap
+from control.algorithms.algorithm import AlgorithmType
+from control.algorithms.policy_iteration import PolicyIteration
+from control.algorithms.value_iteration import ValueIteration
+from model.states_map import StateMap
 
 
 class AlgorithmFactory:
