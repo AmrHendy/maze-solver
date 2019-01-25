@@ -1,5 +1,5 @@
-from control.algorithms.algorithm import Algorithm
-from model.policy import Policy
+from Control.algorithms.algorithm import Algorithm
+from Model.policy import Policy
 import numpy as np
 
 

@@ -1,4 +1,4 @@
-from model.states_map import StateMap
+from Model.states_map import StateMap
 from enum import Enum
 
 

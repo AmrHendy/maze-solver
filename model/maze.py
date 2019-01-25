@@ -1,6 +1,6 @@
 from random import shuffle
-from model.state import State, CellType
-from model.states_map import StateMap
+from Model.state import State, CellType
+from Model.states_map import StateMap
 import numpy as np
 
 

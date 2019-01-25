@@ -1,14 +1,19 @@
 import pygame
-from control.agent.agent import Agent
-from control.algorithms.algorithm import AlgorithmType
+from Control.agent.agent import Agent
+from Control.algorithms.algorithm import AlgorithmType
 
 
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 STEP_COLOR = (0, 150, 0)
+SPLIT_COLOR = (255, 0, 0)
 MARGIN = 1
-WIDTH = 30
-HEIGHT = 30
+WIDTH = 40
+HEIGHT = 40
+SPLITS = 2
+GRIDS = 3
+HOVER_START = (0,255,0)
+START_COLOR = (0,200,0)
 
 
 class App:
@@ -19,7 +24,8 @@ class App:
         self.__agent = Agent(rows, cols)
         self.__agent.solve_maze(AlgorithmType.ValueIteration)
         self.__path = set()
-        self.__window_shape = [self.__N * (WIDTH + MARGIN), self.__M * (HEIGHT + MARGIN)]
+        self.__window_shape = [self.__N * (WIDTH + MARGIN) * GRIDS + WIDTH * SPLITS,
+                               (self.__M + 2) * (HEIGHT + MARGIN)]
         self.__running = True
         self.__display_surf = None
         self.__block_image = None
@@ -34,15 +40,15 @@ class App:
         self.__display_surf = pygame.display.set_mode(self.__window_shape)
         pygame.display.set_caption('RL Maze Solver')
         self.__running = True
-        self.__agent_image = pygame.image.load("view/images/agent.png")
-        self.__agent_image = pygame.transform.scale(self.__agent_image, (HEIGHT, WIDTH))
-        self.__agent_rect = self.__agent_image.get_rect()
-
-        self.__target_image = pygame.image.load("view/images/target.jpg")
-        self.__target_image = pygame.transform.scale(self.__target_image, (HEIGHT, WIDTH))
-        self.__target_rect = self.__agent_image.get_rect()
-
+        self.__agent_image, self.__agent_rect = self.image_to_rect("view/images/agent.png")
+        self.__target_image, self.__target_rect = self.image_to_rect("view/images/target.jpg")
         self.__clock = pygame.time.Clock()
+
+    def image_to_rect(self, image_path):
+        image = pygame.image.load(image_path)
+        image = pygame.transform.scale(image, (HEIGHT, WIDTH))
+        rect = image.get_rect()
+        return image, rect
 
     def run_game(self):
         while self.__running:
@@ -67,8 +73,52 @@ class App:
         if event.type == pygame.QUIT:
             self.__running = False
 
-    def render(self):
-        self.__display_surf.fill(BLACK)
+    def draw_split_rect_vertical(self, offset):
+        pygame.draw.rect(self.__display_surf, SPLIT_COLOR,
+                         [(MARGIN + WIDTH) * self.__N * offset + MARGIN +
+                          (offset - 1) * WIDTH,
+                          0,
+                          WIDTH, (HEIGHT + MARGIN) * self.__M])
+
+    def draw_split_rect_horizontal(self):
+        rect = pygame.draw.rect(self.__display_surf, SPLIT_COLOR,
+                        [0, (MARGIN + HEIGHT) * self.__M,
+                          self.__window_shape[0], HEIGHT])
+
+        margin = self.__window_shape[0] // 3
+        sim_text_center = (rect.center[0] - margin, rect.center[1])
+        policy_text_center = rect.center
+        values_text_center = (rect.center[0] + margin, rect.center[1])
+        self.draw_text("Simulation", sim_text_center, 20)
+        self.draw_text("Policy", policy_text_center, 20)
+        self.draw_text("Values", values_text_center, 20)
+
+    def draw_start_button(self):
+        x = 0
+        y = (MARGIN + HEIGHT) * (self.__M + 1)
+        w = self.__window_shape[0]
+        h = HEIGHT
+        mouse = pygame.mouse.get_pos()
+        event = pygame.event.poll()
+        if x + w > mouse[0] > x and y + h > mouse[1] > y:
+            pygame.draw.rect(self.__display_surf, HOVER_START, (x, y, w, h))
+
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                self.__running = False
+        else:
+            pygame.draw.rect(self.__display_surf, START_COLOR, (x, y, w, h))
+
+        center = ((x + (w / 2)), (y + (h / 2)))
+        self.draw_text("START", center, 20)
+
+    def draw_text(self, txt, center, sz):
+        font = pygame.font.Font(pygame.font.get_default_font(), sz)
+        text = font.render(txt, True, BLACK)
+        text_rect = text.get_rect()
+        text_rect.center = center
+        self.__display_surf.blit(text, text_rect)
+
+    def draw_simulation_grid(self):
         agent_index = self.__agent.get_agent_index()
         for row in range(self.__N):
             for column in range(self.__M):
@@ -94,5 +144,35 @@ class App:
                                      [(MARGIN + WIDTH) * column + MARGIN,
                                       (MARGIN + HEIGHT) * row + MARGIN,
                                       WIDTH, HEIGHT])
+
+    def draw_text_grid(self, offset, values):
+        for row in range(self.__N):
+            for column in range(self.__M):
+                topleft_x = (MARGIN + WIDTH) * (column + offset * self.__N) + MARGIN + offset * WIDTH
+                topleft_y = (MARGIN + HEIGHT) * row + MARGIN
+                rect = pygame.draw.rect(self.__display_surf, WHITE, [topleft_x, topleft_y, WIDTH, HEIGHT])
+                self.draw_text("AAAAA", rect.center, 10)
+
+    def render(self):
+
+        self.__display_surf.fill(BLACK)
+
+        # Draw the grids
+        self.draw_simulation_grid()
+        # TODO: you only need to pass the values you want, stringify it first
+        self.draw_text_grid(1, [])
+        self.draw_text_grid(2, [])
+
+        # Draw the vertical splits
+        self.draw_split_rect_vertical(1)
+        self.draw_split_rect_vertical(2)
+
+        # Draw horizontal split
+        self.draw_split_rect_horizontal()
+
+        # Draw the start button
+        self.draw_start_button()
+
+        # Update the view
         pygame.display.flip()
 
