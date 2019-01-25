@@ -57,7 +57,7 @@ class App:
             self.render()
 
             # not finished yet, so wait for step time then advance the agent
-            self.__clock.tick(2)
+            self.__clock.tick(3)
             self.__path.add(self.__agent.get_agent_index())
             self.__agent.advance_agent()
         # finish the game so quite
@@ -105,7 +105,7 @@ class App:
             pygame.draw.rect(self.__display_surf, START_COLOR, (x, y, w, h))
 
         center = ((x + (w / 2)), (y + (h / 2)))
-        self.draw_text("Solve Using Policy Iteration", center, 20)
+        self.draw_text("Solve Using Policy Iteration", center, 15)
 
         # draw Reset button
         x += w + self.__window_shape[0] / 11
@@ -118,7 +118,7 @@ class App:
             pygame.draw.rect(self.__display_surf, START_COLOR, (x, y, w, h))
 
         center = ((x + (w / 2)), (y + (h / 2)))
-        self.draw_text("Reset Maze", center, 20)
+        self.draw_text("Reset Maze", center, 15)
 
         # draw Solve Using Value Iteration button
         x += w + self.__window_shape[0] / 11
@@ -132,7 +132,7 @@ class App:
             pygame.draw.rect(self.__display_surf, START_COLOR, (x, y, w, h))
 
         center = ((x + (w / 2)), (y + (h / 2)))
-        self.draw_text("Solve Using Value Iteration", center, 20)
+        self.draw_text("Solve Using Value Iteration", center, 15)
 
     def draw_text(self, txt, center, sz):
         font = pygame.font.Font(pygame.font.get_default_font(), sz)
